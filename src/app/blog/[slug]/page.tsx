@@ -1,7 +1,7 @@
 const page = ({ params }: { params: { slug: string }}) => {
 
   return (
-    <div> {params?.slug} Blog Page</div>
+    <h1> {params?.slug} Blog Page</h1>
   )
 }
 
