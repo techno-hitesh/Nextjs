@@ -1,4 +1,8 @@
 import { Metadata } from "next"
+import "./global.css"
+import Navbar from "@/components/navbar"
+import  ReduxProvider  from "../../redux/reduxProvider"
+
 
 export const metadata : Metadata = {
   title: {
@@ -13,21 +17,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <>
-    <html lang="en">
-      <body>
-        <header style={{backgroundColor:"lightblue",padding:"0.2rem"}}>
-          <h2>Header</h2>
-        </header>
-        
-        {children}
 
-        <footer style={{backgroundColor:"lightgrey",padding:"0.2rem"}}>
-          <h3>footer</h3>
-        </footer>
-      </body>
-    </html>
-    </>
+  
+
+  return (
+
+    <ReduxProvider>
+      <html lang="en">
+        <body>
+          {/* <Navbar/> */}
+          <div className="container mx-auto">    
+            {children}
+          </div>
+          {/* <footer style={{backgroundColor:"lightgrey",padding:"0.2rem"}} className="mt-4">
+            <h3>footer</h3>
+          </footer> */}
+        </body>
+      </html>
+    </ReduxProvider>
   )
 }

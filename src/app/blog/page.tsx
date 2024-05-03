@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import Link from "next/link"
 
 
 export const metadata:Metadata = {
@@ -12,7 +13,11 @@ export const metadata:Metadata = {
 
 const blog = () => {
   return (
-    <h1>blog Page</h1>
+    <>
+      <Link href={"/"} className="text-current text-blue-500">Home</Link>
+      <h1>blog Page</h1>
+    
+    </>
   )
 }
 

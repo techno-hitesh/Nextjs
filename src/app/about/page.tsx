@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar"
 export const metadata = {
   title: 'About.js',
   description: "About us page" ,
@@ -6,7 +7,9 @@ export const metadata = {
 
 const about = () => {
   return (
+    <>
     <h1>About Page</h1>
+    </>
   )
 }
 
