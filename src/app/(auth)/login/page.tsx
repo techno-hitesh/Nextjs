@@ -5,7 +5,9 @@ import { useDispatch } from "react-redux"
 import { addUser } from "../../../../redux/slices/userSlicer"
 import { useSelector } from "react-redux";
 import {useRouter} from "next/navigation"
-
+import { loginApi } from "@/helpers/route"
+import { useCookies } from 'next-client-cookies';
+import { getUserApi,getAdminApi } from "@/helpers/route"
 
 interface Props {
   email:string;
@@ -13,20 +15,21 @@ interface Props {
 }
 
 const Login = () => {
-
+  // console.log("loginpage---",process?.env?.NEXT_DB_URL)
+  const cookies = useCookies();
   const router = useRouter(); 
   let loginUser 
-  loginUser = localStorage.getItem("newUsers") || undefined
+  loginUser = typeof window !== 'undefined' ? localStorage.getItem("newUsers") : undefined
 
-  const LoginCheck = async()=>{
-    if(loginUser !== undefined){
-      await router.push("/")
-    }
-  }
+  // const LoginCheck = async()=>{
+  //   if(loginUser !== undefined){
+  //     await router.push("/")
+  //   }
+  // }
 
-  useEffect(()=>{
-    LoginCheck();
-  },[])
+  // useEffect(()=>{
+  //   loginApi("SDf");
+  // },[])
  
 
   const dispatch = useDispatch();
@@ -34,44 +37,68 @@ const Login = () => {
     return  state.users;
   })
 
-  userData.length > 0 ? console.log("login-- data",userData) : ""
+  // userData.length > 0 ? console.log("login-- data",userData) : ""
 
   const [formValue,setFormValue]  = useState<Props | any>({email:"",password:""})
   const [formErrors,setFormErrors] = useState<any>({});
   const [isSubmit,setIsSubmit]  = useState<Boolean>(false);
   const [valMatch,setValMatch] = useState("")
+  const [apiErr,setApiErr] =useState<string|{}|any>("")
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) =>{
+  const handleSubmit = async(e: React.SyntheticEvent<HTMLFormElement>) =>{
     e.preventDefault()
     setFormErrors(validate(formValue));
-    const check = LoginChecker(formValue);
-    console.log("check--",check)
+    const check = await LoginChecker(formValue);
+   
     if(check == true){
       setIsSubmit(true);
       dispatch(addUser(formValue));
-      router.push("/")
+      // loginApi(formValue);
+      router.push("/dashboard")
     }  
 
   }
 
-  const LoginChecker = (data:any) =>{
+  const LoginChecker = async(data:any) =>{
 
-    if(loginUser == undefined){
-      console.log(loginUser)
-        setValMatch("Please register no data found");
-        return false;
+    // if(loginUser == undefined){
+    //   console.log(loginUser)
+    //     setValMatch("Please register no data found");
+    //     return false;
 
-    }else{
+    // }else{
+      let chVal
+       chVal = await loginApi(JSON.stringify(data))
 
-      let checkerVal = JSON.parse(loginUser);
-      if(data.email === checkerVal.email && data.password === checkerVal.password){
-          return true;
-      }else{
-        setValMatch("Credentails are not match Please register...");
+      // if(chVal.success === false){
+      //    chVal = await getAdminApi(JSON.stringify(data))
+      // }
+
+      if(chVal.status === 200){
+        console.log("login PAI---",chVal)
+        cookies.set('authToken', chVal.token)
+        // const authRole = await getUserApi(chVal.token);
+        // if(authRole.userData){
+        //   cookies.set('authRole', authRole.userData.role.role)
+        // }
+        return true;
+      }else if(chVal.status === 400){
+        setApiErr(chVal);
+        setIsSubmit(false);
+        console.log("login -----",chVal)
         return false;
       }
+      
 
-    }
+      // let checkerVal = JSON.parse(loginUser);
+      // if(data.email === checkerVal.email && data.password === checkerVal.password){
+      //     return true;
+      // }else{
+      //   setValMatch("Credentails are not match Please register...");
+      //   return false;
+      // }
+
+    // }
    
   }
 
@@ -145,8 +172,8 @@ const Login = () => {
                  <p className="text-red-500">{formErrors.password}</p>
             </label>
 
-            {isSubmit ==false && valMatch !="" ?
-            <p className="text-red-500">{valMatch}</p>
+            {isSubmit ==false && apiErr !="" ?
+            <p className="text-red-500">{apiErr.message}</p>
             :""
             }
             <span className='block w-full mr-auto ml-7'>Dont have any Account? <Link className='text-blue-700 font-bold' href="/register">Sign Up</Link></span>

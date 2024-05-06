@@ -1,10 +1,13 @@
 "use client"
 import { useState} from "react";
 import { useRouter } from "next/navigation";
+import { useCookies } from 'next-client-cookies';
 
 const dropdown = (props:{checkerVal:string}) => {
+    const cookies = useCookies();
+
     const router = useRouter();
-    console.log("dropdown",props.checkerVal)
+    // console.log("dropdown",props.checkerVal)
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -19,6 +22,8 @@ const dropdown = (props:{checkerVal:string}) => {
     const handleSubmit = () =>{ 
         console.log("dsafsdf")
         localStorage.removeItem('newUsers');
+        cookies.remove('authToken')
+        cookies.remove('userRole')
         router.push("/login")
 
     }

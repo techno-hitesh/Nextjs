@@ -7,30 +7,17 @@ import Logo from "../../public/2.svg"
 import Dropdown from "./dropdown";
 import PrivateFolder from "@/app/_lib/page";
 
-// import { isExpired, decodeToken } from "react-jwt";
-import { useJwt } from "react-jwt";
-import { isExpired, decodeToken } from "react-jwt";
 
-const token = "randomStringmodeersdfcsdf";
-
-
-const Navbar = ({checkerVal}:any) => {
-
-  // const { decodedToken, isExpired } = useJwt(token);
-
-const myDecodedToken = decodeToken(token);
-
-console.log("token",myDecodedToken)
+const Navbar = (checkerVal:any) => {
 
     const [nav, setNav] = useState(false);
-
-    console.log(checkerVal.username)
-
-  
+    const [name,setName] = useState(checkerVal?.userData?.userDetails?.fullName || "Guest");
 
     useEffect(()=>{
       const data = PrivateFolder();
-      console.log("custom",data)
+      // console.log("custom",data)
+
+      console.log("navbar",checkerVal.userData.userDetails,name)
     },[])
 
   const links = [
@@ -51,13 +38,13 @@ console.log("token",myDecodedToken)
     },
     {
       id: 5,
-      link: "/contact",
+      link: "/products",
       name:"contact",
     },
   ];
 
   return (
-    <div className="flex justify-between items-center w-full h-20 px-2 text-white bg-gray-800  nav">
+    <div className="flex justify-between items-center w-full h-20 px-2 text-white bg-gray-800 nav">
       <div className="inline-block">
         {/* <h1 className="text-5xl font-signature ml-2"><a className="link-underline hover:transition ease-in-out delay-150 hover:underline hover:decoration-solid" href="">Logo</a></h1> */}
         <h1 className="text-5xl font-signature ml-2">      
@@ -105,7 +92,7 @@ console.log("token",myDecodedToken)
           ))}
         </ul>
       )}
-        <Dropdown  checkerVal= {checkerVal.username}/>
+        <Dropdown  checkerVal= {name}/>
     </div>
   );
 };

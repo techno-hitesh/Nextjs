@@ -1,16 +1,17 @@
 "use client"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 // import { toast } from 'react-hot-toast';
 import {useRouter} from "next/navigation"
 import { useJwt } from "react-jwt";
 import { isExpired, decodeToken } from "react-jwt";
-
+import { registerApi,apiUrl,version,generateToken } from "@/helpers/route";
+import jwt from 'jsonwebtoken';
 
 const token = "randomStringmodeersdfcsdf";
 
 interface Props {
-    username:string;
+    fullName:string;
     email:string;
     password : number;
     confirmPass:string;
@@ -18,22 +19,27 @@ interface Props {
 const Register = () => {
 
   const router = useRouter(); 
+  const PrivateKey = "sdfsdf4vsdfsf234rfc344sdfsdf"
 
-  const [value,setValue]  = useState<Props | any>({username:"",email:"",password:"",confirmPassword:""})
+  const [value,setValue]  = useState<Props | any>({fullName:"",email:"",password:"",confirmPassword:""})
   const [formErrors,setFormErrors] = useState<any>({});
   const [isSubmit,setIsSubmit]  = useState<Boolean>(false);
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) =>{
+
+  const handleSubmit = async(e: React.SyntheticEvent<HTMLFormElement>) =>{
     e.preventDefault()
     let userArray:[]|any=[];
     setFormErrors(validate(value));
     setIsSubmit(true);
-    userArray.push(JSON.stringify(value));
-    localStorage.setItem("newUsers", JSON.stringify(value));
-    const myDecodedToken:any = decodeToken(token);
-    localStorage.setItem("token", myDecodedToken);
-    router.push("/login")
-
+    // userArray.push(JSON.stringify(value));
+    
+    const result  = await registerApi(JSON.stringify(value));
+    if(result?.status ==201){
+      localStorage.setItem("newUsers", JSON.stringify(value));
+      router.push("/login")
+  
+    }
+   
   }
 
   const handleChange = (e:any) =>{    
@@ -49,10 +55,10 @@ const Register = () => {
 
     const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   
-    console.log("values",values,regex.test(values.email))
+    console.log("valuess",values,regex.test(values.email))
 
-    if(!values.username){
-      errors.username = "username is required";
+    if(!values.fullName){
+      errors.fullName = "fullName is required";
     }
     if(!values.email){
       errors.email = "email is required";
@@ -88,11 +94,11 @@ const Register = () => {
         <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
             Name
         </span>
-        <input required type="name" name="username" className="mt-1 px-3 py-4 w-[350px] md:w-[450px] bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1" placeholder="Enter your name" 
-         value={value.username}
+        <input required type="name" name="fullName" className="mt-1 px-3 py-4 w-[350px] md:w-[450px] bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1" placeholder="Enter your name" 
+         value={value.fullName}
          onChange={(e)=>handleChange(e)}
         />
-         <p className="text-red-500">{formErrors.username}</p>
+         <p className="text-red-500">{formErrors.fullName}</p>
     </label>
 
     <label className="block">

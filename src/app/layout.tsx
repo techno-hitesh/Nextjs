@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 import "./global.css"
 import Navbar from "@/components/navbar"
+import { CookiesProvider } from 'next-client-cookies/server';
 import  ReduxProvider  from "../../redux/reduxProvider"
 
 
@@ -22,6 +23,7 @@ export default function RootLayout({
 
   return (
 
+    <CookiesProvider>
     <ReduxProvider>
       <html lang="en">
         <body>
@@ -35,5 +37,6 @@ export default function RootLayout({
         </body>
       </html>
     </ReduxProvider>
+    </CookiesProvider>
   )
 }
