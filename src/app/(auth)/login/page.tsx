@@ -5,9 +5,12 @@ import { useDispatch } from "react-redux"
 import { addUser } from "../../../../redux/slices/userSlicer"
 import { useSelector } from "react-redux";
 import {useRouter} from "next/navigation"
-import { loginApi } from "@/helpers/route"
+import { loginApi } from "@/services/route"
 import { useCookies } from 'next-client-cookies';
-import { getUserApi,getAdminApi } from "@/helpers/route"
+import { getUserApi,getAdminApi } from "@/services/route"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getUserRoles } from "@/helpers/common"
 
 interface Props {
   email:string;
@@ -21,23 +24,10 @@ const Login = () => {
   let loginUser 
   loginUser = typeof window !== 'undefined' ? localStorage.getItem("newUsers") : undefined
 
-  // const LoginCheck = async()=>{
-  //   if(loginUser !== undefined){
-  //     await router.push("/")
-  //   }
-  // }
-
-  // useEffect(()=>{
-  //   loginApi("SDf");
-  // },[])
- 
-
   const dispatch = useDispatch();
   const userData = useSelector((state:any)=>{
     return  state.users;
   })
-
-  // userData.length > 0 ? console.log("login-- data",userData) : ""
 
   const [formValue,setFormValue]  = useState<Props | any>({email:"",password:""})
   const [formErrors,setFormErrors] = useState<any>({});
@@ -47,59 +37,55 @@ const Login = () => {
 
   const handleSubmit = async(e: React.SyntheticEvent<HTMLFormElement>) =>{
     e.preventDefault()
-    setFormErrors(validate(formValue));
-    const check = await LoginChecker(formValue);
+
+    let errForm :{}|"" = validate(formValue);
+
+    if(Object.keys(errForm).length !== 0){
+      // setFormErrors(errForm);
+
+    }else{
+      const check = await LoginChecker(formValue);
    
-    if(check == true){
-      setIsSubmit(true);
-      dispatch(addUser(formValue));
-      // loginApi(formValue);
-      router.push("/dashboard")
-    }  
+      if(check == true){
+        setIsSubmit(true);
+        dispatch(addUser(formValue));
+        // loginApi(formValue);
+        const userResp = await getUserRoles();
+        const {role} = userResp.role;
 
-  }
+        if(role ==="user"){
+          cookies.set('userRole', role)
+          console.log("role",role);
+          router.push("/user-dashboard");
+        }else{
+          console.log("role",role);
+          cookies.set('userRole', role)
+          router.push("/admin-dashboard");
+        }
+        // router.push("/dashboard")
+      } 
 
-  const LoginChecker = async(data:any) =>{
+    }
+}
 
-    // if(loginUser == undefined){
-    //   console.log(loginUser)
-    //     setValMatch("Please register no data found");
-    //     return false;
+const LoginChecker = async(data:any) =>{
 
-    // }else{
-      let chVal
-       chVal = await loginApi(JSON.stringify(data))
+      let isLoginData
+       isLoginData = await loginApi(JSON.stringify(data))
 
-      // if(chVal.success === false){
-      //    chVal = await getAdminApi(JSON.stringify(data))
-      // }
-
-      if(chVal.status === 200){
-        console.log("login PAI---",chVal)
-        cookies.set('authToken', chVal.token)
-        // const authRole = await getUserApi(chVal.token);
-        // if(authRole.userData){
-        //   cookies.set('authRole', authRole.userData.role.role)
-        // }
+      if(isLoginData.status === 200){
+        cookies.set('authToken', isLoginData.token)
+        localStorage.setItem("authToken",isLoginData.token)
+       
         return true;
-      }else if(chVal.status === 400){
-        setApiErr(chVal);
+        
+      }else if(isLoginData.status === 400){
+        const {message} = isLoginData
+        // setApiErr(isLoginData);
+        toast.error(message);
         setIsSubmit(false);
-        console.log("login -----",chVal)
         return false;
-      }
-      
-
-      // let checkerVal = JSON.parse(loginUser);
-      // if(data.email === checkerVal.email && data.password === checkerVal.password){
-      //     return true;
-      // }else{
-      //   setValMatch("Credentails are not match Please register...");
-      //   return false;
-      // }
-
-    // }
-   
+      }   
   }
 
   const handleChange = (e:any) =>{    
@@ -125,26 +111,30 @@ const Login = () => {
   
     console.log("values",regex.test(values.email))
     if(!values.email){
-      errors.email = "email is required";
+      errors.email = "Email cannot be empty.";
+      toast.error("Email cannot be empty.");
 
     }else if (regex.test(values.email) == false){
-      errors.email = "Please fill valid email...";
+      errors.email = "Please enter a valid email address.";
+      toast.error("Please enter a valid email address.");
     }
 
     if(!values.password){
-      errors.password = "password is required";
-    }else if(values.password.length < 4){
-      errors.password = "password length is not less then 4";
-    } else if(values.password.length > 10){
-      errors.password = "password length is not greater then 10";
-    } 
+      errors.password = "Password is required";
+      toast.error("Password is required");
+    }else if (values.password.length < 8 || values.password.length > 10) {
+      errors.password = "Password must be between 8 and 10 characters long";
+      toast.error("Password must be between 8 and 10 characters long");
+    }
 
     return errors;
   }
 
   return (
 
-  
+  <>
+  <ToastContainer autoClose={2000} />
+
     <form       
         className='flex flex-col justify-center items-center gap-5 max-w-lg shadow-2xl shadow-gray-900 h-screen hover:shadow-gray-300  bg-white mx-auto rounded-md text-gray-900 mt-4'  onSubmit={handleSubmit}>
             <h3 className='text-2xl '>Please Log In! </h3>
@@ -183,6 +173,7 @@ const Login = () => {
             className='bg-[#53c28b] text-white rounded-md p-[15px] w-[90%]'
              >Continue With Google</button> */}
         </form>
+        </>
   )
 }
 

@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
  
   if(isPublicPath && token){
     // console.log("middleware working----\public page",request.url)
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/user-dashboard', request.url))
   }
 
   // if(isPublicPath && token && authRole === "admin"){
@@ -32,11 +32,11 @@ export function middleware(request: NextRequest) {
 
 }
  
-// See "Matching Paths" below to learn more
+// See "Matching Paths" below to learn more '/dashboard',
 export const config = {
     matcher: [
       '/',
-      '/dashboard',
+     
       '/user-dashboard',
       '/admin-dashboard',
       '/login',

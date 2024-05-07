@@ -1,6 +1,6 @@
 "use client"
 import Navbar from "@/components/navbar"
-import { getAdminApi } from "@/helpers/route"
+import { getAdminApi } from "@/services/route"
 import { useCookies } from 'next-client-cookies';
 import { useEffect, useState } from "react";
  

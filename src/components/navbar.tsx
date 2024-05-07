@@ -3,49 +3,54 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from 'next/image';
-import Logo from "../../public/2.svg"
+import Logo from "../../public/3.svg"
 import Dropdown from "./dropdown";
 import PrivateFolder from "@/app/_lib/page";
+import { userRoute } from "@/helpers/route";
+import { getUserRoles } from "@/helpers/common";
 
 
-const Navbar = (checkerVal:any) => {
+type Props={
+  id:string,
+  link:string,
+  name:string
+}
+
+const Navbar = () => {
 
     const [nav, setNav] = useState(false);
-    const [name,setName] = useState(checkerVal?.userData?.userDetails?.fullName || "Guest");
+    const [name,setName] = useState("");
+    const [arrLink,setArrLink] = useState<[]|any>("")
+
+
+    const userData = async() =>{
+      try {
+        const res = await getUserRoles();
+        const {role} = res?.role
+        setName(res.fullName);
+
+        if(role !="" && role != null){
+          role == "user" ? setArrLink(userRoute):""
+        }
+        // console.log("navbar----",res)
+        
+      } catch (error) {
+          console.log("navbar---error--",error)
+      }
+    }
 
     useEffect(()=>{
-      const data = PrivateFolder();
-      // console.log("custom",data)
-
-      console.log("navbar",checkerVal.userData.userDetails,name)
+      userData();
     },[])
 
-  const links = [
-    {
-      id: 1,
-      link: "/",
-      name:"Home",
-    },
-    {
-      id: 2,
-      link: "/about",
-      name:"about",
-    },
-    {
-      id: 3,
-      link: "/docs",
-      name:"docs",
-    },
-    {
-      id: 5,
-      link: "/products",
-      name:"contact",
-    },
-  ];
+
+// const links = role=="user"  ? userRoute:""
 
   return (
-    <div className="flex justify-between items-center w-full h-20 px-2 text-white bg-gray-800 nav">
-      <div className="inline-block">
+    <>
+{arrLink  && name ? 
+    <div className="flex justify-between items-center w-full h-20 px-2 text-black bg-light-800 nav">
+      <div className="inline-flex">
         {/* <h1 className="text-5xl font-signature ml-2"><a className="link-underline hover:transition ease-in-out delay-150 hover:underline hover:decoration-solid" href="">Logo</a></h1> */}
         <h1 className="text-5xl font-signature ml-2">      
         <Link href="/">
@@ -58,10 +63,11 @@ const Navbar = (checkerVal:any) => {
             />
         </Link> 
         </h1>
+        <h1 className="ml-8 mt-1">Zipkart</h1>
       </div>
 
       <ul className="hidden md:flex">
-        {links.map(({ id, link ,name}) => (
+        {arrLink !="" && arrLink.map(({ id, link ,name}:Props) => (
           <li
             key={id}
             className="nav-links px-4 cursor-pointer capitalize font-medium text-gray-500 hover:scale-105 hover:text-black duration-200 link-underline"
@@ -80,7 +86,7 @@ const Navbar = (checkerVal:any) => {
 
       {nav && (
         <ul className="flex flex-col justify-center items-center absolute top-0 left-0 w-full h-screen bg-gradient-to-b from-black to-gray-800 text-gray-500">
-          {links.map(({ id, link }) => (
+          {arrLink !="" && arrLink.map(({ id, link }:Props) => (
             <li
               key={id}
               className="px-4 cursor-pointer capitalize py-6 text-4xl"
@@ -94,6 +100,9 @@ const Navbar = (checkerVal:any) => {
       )}
         <Dropdown  checkerVal= {name}/>
     </div>
+    :""}
+    </>
+    
   );
 };
 

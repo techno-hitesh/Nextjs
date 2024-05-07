@@ -1,16 +1,42 @@
 "use client"
 import Navbar from "@/components/navbar"
-import { getUserApi } from "@/helpers/route"
-import { useCookies } from 'next-client-cookies';
+import { getUserApi } from "@/services/route"
 import { useEffect, useState } from "react";
- 
-export default function UserDashboard (userDetails:any){
-    const cookieStore = useCookies();
-    const theme = cookieStore.get('authToken');
+import Image from "next/image";
+import T1 from "../../../public/images/t1.jpg"
+import { ServiceCard } from "@/components/serviceCard";
+import T2 from "../../../public/images/t2.jpg"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getUserRoles } from "@/helpers/common";
 
-    const [user,setUser] = useState<string|any|{}>(userDetails);
+export default function UserDashboard() {
 
-        // console.log("userDetails------------",userDetails)
+    // const tokens = localStorage.getItem('authToken')
+    const [user, setUser] = useState<string | any | {}>("");
+
+    const userData = async() =>{
+        const res = await getUserRoles();
+        console.log("user-dashboard",res)
+        if(res !=""){
+            setUser(res);
+        }
+
+        const toastShownBefore = localStorage.getItem('toastShownBefore');
+        if (toastShownBefore === null || toastShownBefore === '') {
+            toast.success(`Welcome ${user?.fullName}!`);
+            setTimeout(() => {
+                localStorage.setItem('toastShownBefore', "true");
+            }, 1000)
+        }
+    }
+
+    useEffect(() => {
+        userData()
+       
+    }, []);
+
+    // console.log("userDetails------------",userDetails)
 
     // const getUserData = async() =>{
 
@@ -23,22 +49,35 @@ export default function UserDashboard (userDetails:any){
     //     }
 
     // }
-   
+
     // useEffect(()=>{
     //     getUserData();
     // },[])
 
-    return(
+    return (
         <>
-        {user && user?.userDetails !="" ? 
-        <>
+            <ToastContainer autoClose={1000} />
+            {user && user?.userDetails != "" ?
+                <>
 
-         <Navbar userData={user}/>
-         <h1>user Dashboard Page</h1>
-         </>
-         :""
-        }
-       
+                    {/* <Navbar userData={user} /> */}
+                    <div className="lg:container w-screen mx-auto">
+                        <div>
+                            <Image
+                                priority
+                                src={T1}
+                                // height={32}
+                                // width={32}
+                                alt="Follow us on Twitter" />
+
+                        </div>
+
+                    </div>
+
+                </>
+                : ""
+            }
+
         </>
     )
 }

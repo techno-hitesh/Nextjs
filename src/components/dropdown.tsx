@@ -20,8 +20,10 @@ const dropdown = (props:{checkerVal:string}) => {
     };
 
     const handleSubmit = () =>{ 
-        console.log("dsafsdf")
-        localStorage.removeItem('newUsers');
+        // console.log("dsafsdf")
+        localStorage.removeItem('toastShownBefore');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userRole');
         cookies.remove('authToken')
         cookies.remove('userRole')
         router.push("/login")
@@ -29,7 +31,7 @@ const dropdown = (props:{checkerVal:string}) => {
     }
     return (
         <>
-        <div className='w-full py-2 pb-3'>
+        <div className='py-2 pb-3'>
             <div className="relative inline-block">
                 <button
                     type="button"
