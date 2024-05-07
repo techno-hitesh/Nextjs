@@ -1,6 +1,6 @@
 "use client"
 import { ServiceCard } from "@/components/serviceCard" 
-import { getAllProducts } from "@/services/products"
+import { getAllProducts } from "@/services/products/products"
 import { useEffect, useState } from "react"
 
 const UsersProducts = () => {

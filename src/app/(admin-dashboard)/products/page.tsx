@@ -1,5 +1,5 @@
 "use client"
-import { getAllProducts } from "@/services/products"
+import { getAllProducts } from "@/services/products/products"
 import { useCookies } from 'next-client-cookies';
 import { useEffect, useState } from "react";
 

@@ -8,7 +8,7 @@ import Dropdown from "./dropdown";
 import PrivateFolder from "@/app/_lib/page";
 import { userRoute } from "@/helpers/route";
 import { getUserRoles } from "@/helpers/common";
-
+import Addtocart from "./addtocart";
 
 type Props={
   id:string,
@@ -98,6 +98,7 @@ const Navbar = () => {
           ))}
         </ul>
       )}
+      <Addtocart />
         <Dropdown  checkerVal= {name}/>
     </div>
     :""}
