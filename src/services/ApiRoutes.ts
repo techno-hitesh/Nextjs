@@ -8,3 +8,6 @@ export const apiRoutes = {
     addToCart:'/user/add-to-cart'
 }
   
+export const adminRoutes = {
+        getAllCategory :'/admin/get-all-categories'
+}

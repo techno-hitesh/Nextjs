@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { authTokens } from './helpers/common';
  
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
@@ -10,7 +9,7 @@ export function middleware(request: NextRequest) {
 
   const isPublicPath = path === "/login" || path === "/register" || path === "/" ;
 
-  console.log(typeof window,"middlware-----" ,authTokens)
+  console.log(typeof window,"middlware-----" )
   
   const token = request.cookies.get("authToken")?.value; 
   const authRole	= request.cookies.get("userRole")?.value; 

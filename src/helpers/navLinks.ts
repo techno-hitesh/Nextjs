@@ -20,7 +20,7 @@ export const adminRoute = [
   },
   {
     id: 2,
-    link: "/admin-dashboard/contact",
-    name:"contact",
+    link: "/admin-dashboard/category",
+    name:"Category",
   },
 ];

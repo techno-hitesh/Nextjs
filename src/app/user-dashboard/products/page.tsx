@@ -2,6 +2,7 @@
 import { ServiceCard } from "@/components/serviceCard" 
 import { getAllProducts } from "@/services/products/products"
 import { useEffect, useState } from "react"
+import Loading from "../loading"
 
 const UsersProducts = () => {
 
@@ -20,9 +21,14 @@ const UsersProducts = () => {
 
   return (
     <>
-    <div className="inline-flex">
-    <ServiceCard data={usrProducts}/>
-    </div>
+    {usrProducts ?
+      <div className="inline-flex">
+      <ServiceCard data={usrProducts}/>
+      </div>
+      :
+      <Loading />
+    }
+    
         
     </>
   )

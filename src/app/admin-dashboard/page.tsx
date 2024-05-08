@@ -8,8 +8,10 @@ import Image from "next/image";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getUserRoles } from "@/helpers/common";
+import { useRouter } from 'next/navigation';
  
 export default function AdminDashboard (userDetails:any){
+    const router = useRouter();
     const cookieStore = useCookies();
     const theme = cookieStore.get('authToken');
 
@@ -17,10 +19,12 @@ export default function AdminDashboard (userDetails:any){
  
 
     const userData = async() =>{
-        const res = await getUserRoles();
+        const authToken = localStorage.getItem("authToken")
+        const res = await getUserRoles(authToken);
 
         if(res.success == false){
-            console.log("useruseruseruseruseruseruseruser")
+            console.log("useruseruseruseruseruseruseruser---")
+            // router.push("/login")
             return false;
         }
         

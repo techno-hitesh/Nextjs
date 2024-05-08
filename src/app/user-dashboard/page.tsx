@@ -4,16 +4,17 @@ import Image from "next/image";
 import T1 from "../../../public/images/t1.jpg"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { authTokens, getUserRoles } from "@/helpers/common";
+import { getUserRoles } from "@/helpers/common";
+import Loading from "../loading"
 
 
 export default function UserDashboard() {
     // const tokens = localStorage.getItem('authToken')
     const [user, setUser] = useState<string | any | {}>("");
- 
 
     const userData = async() =>{
-        const res = await getUserRoles();
+        const authToken = localStorage.getItem("authToken")
+        const res = await getUserRoles(authToken);
 
         if(res.success == false){
             console.log("useruseruseruseruseruseruseruser")
@@ -26,10 +27,8 @@ export default function UserDashboard() {
 
         const toastShownBefore = localStorage.getItem('toastShownBefore');
         if (toastShownBefore === null || toastShownBefore === '') {
-            toast.success(`Welcome ${res?.fullName}!`);
-            setTimeout(() => {
-                localStorage.setItem('toastShownBefore', "true");
-            }, 1000)
+            toast.success(`Welcome ${res?.fullName}!`);    
+            localStorage.setItem('toastShownBefore', "true");
         }
     }
 
@@ -60,7 +59,6 @@ export default function UserDashboard() {
             <ToastContainer autoClose={1000} />
             {user && user?.userDetails != "" ?
                 <>
-
                     {/* <Navbar userData={user} /> */}
                     <div className="lg:container w-screen mx-auto">
                         <div>
@@ -70,15 +68,11 @@ export default function UserDashboard() {
                                 // height={32}
                                 // width={32}
                                 alt="Follow us on Twitter" />
-
                         </div>
-
                     </div>
-
                 </>
-                : ""
+                : <Loading />
             }
-
         </>
     )
 }

@@ -6,39 +6,51 @@ import { useEffect, useState } from "react";
 const Products = () => {
   const cookies = useCookies();
 
-  const [productData,setProductData] = useState<[] | {} | any>([])
+  const [productData, setProductData] = useState<[] | {} | any>([])
 
-  const products = async() =>{
+  const products = async () => {
     const token = cookies.get('authToken');
     const res = await getAllProducts(token);
-    if(res.data){
+    if (res.data) {
       setProductData(res.data.products);
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     products()
-    if(productData !=""){
-      productData.map((data:any,i:number)=>{
-        console.log("dasfasd",data)
-  
+    if (productData != "") {
+      productData.map((data: any, i: number) => {
+        console.log("dasfasd", data)
+
       })
     }
-   
-  },[])
+
+  }, [])
 
   return (
     <>
+      <section className="bg-white ">
+        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+          <div className="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400">
+            <h2 className="mb-4 text-4xl tracking-tight font-bold text-white-900 dark:text-light">Powering innovation at <span className="font-extrabold">200,000+</span>  <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-1 mb-1 ">Create Products</button></h2>
+           
+            
 
-    {productData!="" && productData.map((data:any,i:any)=>(
-      <ul key={data._id}>
-      <li>{data.productName}</li>
-      </ul>
-    ))
+           
+          </div>
+        </div>
+      </section>
 
 
-    }
-    {/* {productData && productData!="" ? productData.map((data:any,i:number)=>{
+      {productData != "" && productData.map((data: any, i: any) => (
+        <ul key={data._id}>
+          <li>{data.productName}</li>
+        </ul>
+      ))
+
+
+      }
+      {/* {productData && productData!="" ? productData.map((data:any,i:number)=>{
 
       return(
         <>

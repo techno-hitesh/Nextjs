@@ -29,25 +29,27 @@ const CookieDestroy = () => {
     }
 } 
 
-  // const globalUser = async() =>{
-  //   const userResp =  await getUserRoles();
-  //   // console.log({userResp});
-  //   if(userResp.success == false){
-  //     destroyStorage();
-  //   }
+  const globalUser = async() =>{
+    const authToken =  await localStorage.getItem("authToken")
+    const userResp =  await getUserRoles(authToken);
+    console.log("cookie--------------",{userResp});
+    if(userResp.success == false){
+      destroyStorage();
+    }
     
-  // }
+  }
   useLayoutEffect(()=>{
 
     let loginUser  = typeof window !== 'undefined' ? localStorage.getItem(auth.storageTokenKeyName) : undefined
     if(loginUser == undefined){
       console.log("cookieDestroy in else", loginUser)
-      destroyStorage()
-    }else{
-      const role = localStorage.getItem("userRole")
-      role == "admin" ? router.push("/admin-dashboard") : router.push("/user-dashboard")
-      console.log("admin--------",role)
+      globalUser()
     }
+      const role = localStorage.getItem("userRole")
+   
+      // if(role){
+      //   role == "user" ? router.replace("/user-dashboard") :router.replace("/admin-dashboard")
+      // }
   },[])
   
   

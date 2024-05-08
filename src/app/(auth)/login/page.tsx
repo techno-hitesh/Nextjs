@@ -46,12 +46,12 @@ const Login = () => {
     }else{
       const check = await LoginChecker(formValue);
    
-      if(check == true){
+      if(check){
         setIsSubmit(true);
 
-        const userResp = await getUserRoles();
+        const userResp = await getUserRoles(check.token);
         console.log("statusssdsd",userResp)
-        if(userResp.email){
+        if(userResp){
             dispatch(addUser(userResp));
             const {role} = userResp.role;
     
@@ -83,7 +83,7 @@ const LoginChecker = async(data:any) =>{
         cookies.set('authToken', isLoginData.token)
         localStorage.setItem("authToken",isLoginData.token)
        
-        return true;
+        return isLoginData;
         
       }else if(isLoginData.status === 400){
         const {message} = isLoginData
