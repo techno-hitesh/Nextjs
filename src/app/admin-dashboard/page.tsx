@@ -1,14 +1,18 @@
 "use client"
+import Navbar from "@/components/navbar"
+import { getAdminApi } from "@/services/route"
+import { useCookies } from 'next-client-cookies';
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import T1 from "../../../public/images/t1.jpg"
+import Image from "next/image";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { authTokens, getUserRoles } from "@/helpers/common";
+import { getUserRoles } from "@/helpers/common";
+ 
+export default function AdminDashboard (userDetails:any){
+    const cookieStore = useCookies();
+    const theme = cookieStore.get('authToken');
 
-
-export default function UserDashboard() {
-    // const tokens = localStorage.getItem('authToken')
     const [user, setUser] = useState<string | any | {}>("");
  
 
@@ -26,7 +30,7 @@ export default function UserDashboard() {
 
         const toastShownBefore = localStorage.getItem('toastShownBefore');
         if (toastShownBefore === null || toastShownBefore === '') {
-            toast.success(`Welcome ${res?.fullName}!`);
+            toast.success(`Welcome Admin ${res?.fullName}!`);
             setTimeout(() => {
                 localStorage.setItem('toastShownBefore', "true");
             }, 1000)
@@ -37,28 +41,9 @@ export default function UserDashboard() {
         userData()       
     }, []);
 
-    // console.log("userDetails------------",userDetails)
-
-    // const getUserData = async() =>{
-
-    //     if(theme && theme !==""){
-    //         const res = await getUserApi(theme);
-    //         if(res.status == 200){
-    //             setUser(res.userData);
-    //         }
-    //         // console.log("under funct",res)
-    //     }
-
-    // }
-
-    // useEffect(()=>{
-    //     getUserData();
-    // },[])
-
-    return (
+    return(
         <>
-            <ToastContainer autoClose={1000} />
-            {user && user?.userDetails != "" ?
+           {user && user?.userDetails != "" ?
                 <>
 
                     {/* <Navbar userData={user} /> */}
@@ -80,5 +65,6 @@ export default function UserDashboard() {
             }
 
         </>
+
     )
 }

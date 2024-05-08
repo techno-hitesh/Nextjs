@@ -1,52 +1,30 @@
-'use client'
-import Link from "next/link";
-import useSWR from 'swr';
-import { useEffect,useState } from "react";
+
+import { useRouter } from "next/navigation";
 import Login from "./(auth)/login/page";
-import { useSelector } from "react-redux";
-import Navbar from "@/components/navbar"
-import { useCookies } from 'next-client-cookies';
-
-// const fetcher = (...args:any) => fetch(...args).then((res) => res.json())
-
-const UserProps={
-  id:Number,
-  firstName:String,
-  username:String,
-  email:String,
-  company:{},
-  website:String,
-}
+import auth from "@/configs/auth";
+import { getUserRoles } from "@/helpers/common";
 
 const Home = () => {
 
-  const cookie = useCookies();
+  // const router = useRouter();
 
-  let loginUser  = typeof window !== 'undefined' ? localStorage.getItem("newUsers") : undefined
-  let checkerVal
-  if(loginUser != undefined){
-
-    checkerVal = JSON.parse(loginUser);
-  }
-
-  // console.log("check value",checkerVal == undefined ? "hello" : "no hello")
- 
-
-  // const {data,error} = useSWR("https://jsonplaceholder.typicode.com/users",fetcher);
-
-
+  // let loginUser  = typeof window !== 'undefined' ? localStorage.getItem(auth.storageTokenKeyName) : undefined
+  // if(loginUser != undefined){
+  //   const userResp = await getUserRoles();
+  
+  //   console.log("enter in if")
+  //   router.push("/user-dashbord")
+  // }else{
+  //   console.log("enter in else")
+  //   router.push("/login")
+  // }
+  
   return (
     <>
-    {checkerVal == undefined  ? 
+    {/* {checkerVal == undefined  ? 
     
-    <Login/>:
-
-   <>
-      {/* <Navbar checkerVal={checkerVal}/> */}
-      <h1 className="mt-4">Dasboard Page</h1>
-      </>
-   
-  }
+    <Login/>: ""        
+          } */}
 
     </>
   )

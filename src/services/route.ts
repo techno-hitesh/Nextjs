@@ -1,17 +1,11 @@
-// All API functions
-import { json } from 'stream/consumers';
-import jwt from "jsonwebtoken";
+import { apiRoutes } from "./ApiRoutes";
 
-
-
-export const apiUrl = process?.env?.NEXT_DB_URL || "https://cart-app-ibuu.onrender.com";
-export const version = process?.env?.NEXT_VERSION || "/api/v1"; 
-const PrivateKey = "sdfsdf4vsdfsf234rfc344sdfsdf"
+const apiUrl = process?.env?.NEXT_PUBLIC_API_BASE_URL;
 
 
 export const registerApi = async(formVal:any|{}) => {
   try {
-    const response = await fetch(`${apiUrl}${version}/user/register`, {
+    const response = await fetch(`${apiUrl}${apiRoutes.registerUser}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +33,7 @@ export const registerApi = async(formVal:any|{}) => {
 
 export const loginApi = async(formVal:any|{}) => {
   try {
-    const response = await fetch(`${apiUrl}${version}/login/user-login`, {
+    const response = await fetch(`${apiUrl}${apiRoutes.loginUser}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,7 +64,7 @@ export const loginApi = async(formVal:any|{}) => {
 export const getUserApi = async(token:any|{}) => {
   try {
     // console.log("user-sdsd",token)
-    const response = await fetch(`${apiUrl}${version}/user/get-user`, {
+    const response = await fetch(`${apiUrl}${apiRoutes.getUsers}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -83,7 +77,7 @@ export const getUserApi = async(token:any|{}) => {
       const errData = await response.json();
       console.log("getUserApi error",errData)
       return errData;
-      throw new Error('Login failed');
+      // throw new Error('Login failed');
     }
 
     // // Assuming the response is JSON
@@ -99,7 +93,7 @@ export const getUserApi = async(token:any|{}) => {
 export const getAdminApi = async(token:any|{}) => {
   try {
     // console.log("admin-sdsd",token)
-    const response = await fetch(`${apiUrl}${version}/admin/get-admin`, {
+    const response = await fetch(`${apiUrl}${apiRoutes.adminUsers}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

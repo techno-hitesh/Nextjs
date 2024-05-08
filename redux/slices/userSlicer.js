@@ -12,7 +12,7 @@ const userSlices = createSlice({
     }
 })
 
-// console.log(userSlices.actions)
+// console.log(userSlices.actions.addUser)
 
 export default userSlices.reducer;
 

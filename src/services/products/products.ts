@@ -1,13 +1,13 @@
 import axios from "axios";
+import { apiRoutes } from "../ApiRoutes";
+import axiosInstance from "@/axios/axiosInstance";
 
-export const apiUrl = process?.env?.NEXT_DB_URL || "https://cart-app-ibuu.onrender.com";
-export const version = process?.env?.NEXT_VERSION || "/api/v1"; 
-const PrivateKey = "sdfsdf4vsdfsf234rfc344sdfsdf"
+const apiUrl = process?.env?.NEXT_PUBLIC_API_BASE_URL;
 
 export const getAllProducts = async(token:any|{}) => {
     try {
       // console.log("admin-sdsd",token)
-      const response = await fetch(`${apiUrl}${version}/admin/get-all-products`, {
+      const response = await fetch(`${apiUrl}${apiRoutes.allGetProducts}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -34,13 +34,13 @@ export const getAllProducts = async(token:any|{}) => {
 
 export const AddToCart = async (val: any,) => {
   try {
-    const token=`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM4OTFhZmU5OTU4NmNlZDI1MmVkOWMiLCJmdWxsTmFtZSI6ImhpdGVzaCIsImVtYWlsIjoiaGl0ZXNoQGdtYWlsLmNvbSIsInJvbGUiOnsiX2lkIjoiNjYzNGMxMzdjOTA2NTNjZjdhYTFlYTk2Iiwicm9sZSI6InVzZXIifSwiaWF0IjoxNzE1MDg2NjYwLCJleHAiOjE3MTUwOTAyNjB9.c9FBrcoV6tnRg9cjljrpBkn4mDPJOu3aUorc-Uizs8U`
+
     const data = JSON.stringify(val);
 
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${apiUrl}${version}/user/add-to-cart`,
+      url: `${apiUrl}${apiRoutes.addToCart}`,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -56,3 +56,9 @@ export const AddToCart = async (val: any,) => {
     throw new Error('AddToCart func failed');
   }
 }
+
+export const getQuestions = async () =>
+  await axiosInstance.get(apiRoutes.getUsers).catch(err => {
+    console.log(err?.response?.data?.message || err?.message)
+    throw err
+  })

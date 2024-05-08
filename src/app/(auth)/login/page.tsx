@@ -21,8 +21,8 @@ const Login = () => {
   // console.log("loginpage---",process?.env?.NEXT_DB_URL)
   const cookies = useCookies();
   const router = useRouter(); 
-  let loginUser 
-  loginUser = typeof window !== 'undefined' ? localStorage.getItem("newUsers") : undefined
+
+
 
   const dispatch = useDispatch();
   const userData = useSelector((state:any)=>{
@@ -48,20 +48,26 @@ const Login = () => {
    
       if(check == true){
         setIsSubmit(true);
-        dispatch(addUser(formValue));
-        // loginApi(formValue);
-        const userResp = await getUserRoles();
-        const {role} = userResp.role;
 
-        if(role ==="user"){
-          cookies.set('userRole', role)
-          console.log("role",role);
-          router.push("/user-dashboard");
+        const userResp = await getUserRoles();
+        console.log("statusssdsd",userResp)
+        if(userResp.email){
+            dispatch(addUser(userResp));
+            const {role} = userResp.role;
+    
+            if(role ==="user"){
+              cookies.set('userRole', role)
+              console.log("role",role);
+              router.push("/user-dashboard");
+            }else{
+              console.log("role",role);
+              cookies.set('userRole', role)
+              router.push("/admin-dashboard");
+            }
         }else{
-          console.log("role",role);
-          cookies.set('userRole', role)
-          router.push("/admin-dashboard");
+          toast.error("Server Error Please Wait!!")
         }
+        
         // router.push("/dashboard")
       } 
 
@@ -96,14 +102,6 @@ const LoginChecker = async(data:any) =>{
     }));
   }
 
-  useEffect(()=>{
-    // console.log("without value",formValue,formErrors);
-    if(Object.keys(formErrors).length == 0 && isSubmit){
-      console.log(formValue);
-    }
-
-  },[formErrors])
-
   const validate = (values:any|{}) =>{
     const errors:Props|any = {};
 
@@ -133,6 +131,7 @@ const LoginChecker = async(data:any) =>{
   return (
 
   <>
+
   <ToastContainer autoClose={2000} />
 
     <form       

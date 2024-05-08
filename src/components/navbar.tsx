@@ -6,9 +6,10 @@ import Image from 'next/image';
 import Logo from "../../public/3.svg"
 import Dropdown from "./dropdown";
 import PrivateFolder from "@/app/_lib/page";
-import { userRoute } from "@/helpers/route";
+import { userRoute,adminRoute } from "@/helpers/navLinks";
 import { getUserRoles } from "@/helpers/common";
 import Addtocart from "./addtocart";
+
 
 type Props={
   id:string,
@@ -21,16 +22,19 @@ const Navbar = () => {
     const [nav, setNav] = useState(false);
     const [name,setName] = useState("");
     const [arrLink,setArrLink] = useState<[]|any>("")
+    const [userRole , setUserRole] = useState("")
 
+    
 
     const userData = async() =>{
       try {
+        const UserRole = localStorage.getItem("userRole");
         const res = await getUserRoles();
-        const {role} = res?.role
         setName(res.fullName);
 
-        if(role !="" && role != null){
-          role == "user" ? setArrLink(userRoute):""
+        if(UserRole !="" && UserRole != null){
+          setUserRole(UserRole)
+          UserRole == "user" ? setArrLink(userRoute):setArrLink(adminRoute)
         }
         // console.log("navbar----",res)
         
@@ -98,7 +102,9 @@ const Navbar = () => {
           ))}
         </ul>
       )}
+      {userRole == "user" ? 
       <Addtocart />
+      :""}
         <Dropdown  checkerVal= {name}/>
     </div>
     :""}
